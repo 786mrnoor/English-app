@@ -162,7 +162,7 @@ function getCurrentUser(setUser) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             setUser('login', auth.currentUser);
-        } 
+        }
         else {
             setUser('logout');
         }
@@ -181,22 +181,22 @@ function resetPassword() {
 }
 
 function profilePicUpload(id, file, setImage, showLoader) {
-    uploadBytes(sRef(storage, `usersPic/${id}`), file)
+    uploadBytes(sRef(storage, `usersPic/${id}/profilePic`), file)
         .then((snapshot) => {
-            getDownloadURL(sRef(storage, `usersPic/${id}`))
-            .then((url)=>{
-                updateProfile(auth.currentUser, {
-                    photoURL: url
+            getDownloadURL(sRef(storage, `usersPic/${id}/profilePic`))
+                .then((url) => {
+                    updateProfile(auth.currentUser, {
+                        photoURL: url
+                    })
+                        .then(() => {
+                            showLoader(false);
+                            setImage(auth.currentUser);
+                        }).catch((error) => {
+
+                        });
                 })
-                    .then(() => {
-                        showLoader(false);
-                        setImage(auth.currentUser);
-                    }).catch((error) => {
-    
-                    });
-            })
         })
-        .catch(err=>{
+        .catch(err => {
             console.log(err.code);
             console.log(err.message);
         })

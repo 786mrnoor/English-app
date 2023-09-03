@@ -46,6 +46,7 @@ nav.topNav ul li a.active{
     height: 50px;
     aspect-ratio: 1;
     border-radius: 50%;
+    cursor: pointer;
 }
 .profile{
     position: absolute;
@@ -76,6 +77,7 @@ nav.topNav ul li a.active{
     display: block;
     margin: auto;
     border: 3px solid #03a9f4;
+    cursor: auto;
 }
 .profile .imgContainer label{
     position: absolute;
