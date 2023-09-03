@@ -1,0 +1,22 @@
+#loaderBox{
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+#loaderBox .loader{
+    width: 120px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 16px solid white;
+    border-top-color: royalblue;
+    animation: rotate 1.2s ease-out infinite;
+}
+@keyframes rotate {
+    to{
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="topNav.css">
+    <link rel="stylesheet" href="loader.css">
+    <style>
+        .tableContainer {
+            width: 90%;
+            padding: 30px;
+            background-color: white;
+            margin: 50px auto 150px auto;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            border: 1px solid royalblue;
+        }
+
+        table th {
+            background-color: royalblue;
+            color: white;
+            border-color: white;
+        }
+
+        table th,
+        table td {
+            padding: 10px 5px;
+        }
+
+        table td button {
+            background-color: royalblue;
+            outline: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+
+        table tr.cpt {
+            background-color: #b9ebb9;
+        }
+
+
+        nav.filter {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background-color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: end;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            color: royalblue;
+            box-shadow: 0px 0px 9px rgb(0, 0, 0);
+        }
+
+        nav.filter input,
+        nav.filter select {
+            padding: 10px;
+            outline: none;
+            border: 1px solid royalblue;
+            font-size: 17px;
+            color: royalblue;
+        }
+
+        nav.filter input:focus,
+        nav.filter select:focus {
+            box-shadow: 1px 1px 4px rgb(121, 149, 236);
+        }
+
+
+        .popUp {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            overflow: auto;
+        }
+
+        .popUp .addBox {
+            margin: 50px auto;
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 7px black;
+            animation: rot 1.4s ease;
+        }
+
+        @keyframes rot {
+            0% {
+                transform: scale(0.2);
+            }
+
+            100% {
+                transform: scale(1) rotate(360deg);
+            }
+        }
+
+        .popUp .addBox header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 0px 6px black;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .popUp .addBox main {
+            padding: 20px;
+        }
+
+        .popUp .addBox main ul {
+            list-style: none;
+        }
+
+        .popUp .addBox main ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            column-gap: 10px;
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: aliceblue;
+            border: 1px solid #84c5fe;
+            border-radius: 5px;
+        }
+
+        .popUp .addBox main ul li input,
+        .popUp .addBox main ul li select {
+            width: 100%;
+            padding: 4px;
+            outline: none;
+            border: 1px solid #84c5fe;
+            font-size: 17px;
+        }
+
+        .popUp .addBox main ul li input:focus,
+        .popUp .addBox main ul li select:focus {
+            box-shadow: 0px 0px 5px #65a3db;
+        }
+
+        .popUp .addBox footer {
+            padding: 20px;
+            border-top: 1px solid gray;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: 10px;
+        }
+
+        .popUp .addBox header button,
+        .popUp .addBox footer button {
+            padding: 10px 15px;
+            background-color: royalblue;
+            outline: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s all;
+        }
+
+        .popUp .addBox header button:focus,
+        .popUp .addBox footer button:focus {
+            outline: 3px solid royalblue;
+            outline-offset: 4px;
+        }
+
+        .popUp .addBox header button:active,
+        .popUp .addBox footer button:active {
+            outline-offset: -6px;
+            outline-color: white;
+        }
+
+        .popUp .addBox header button:hover,
+        .popUp .addBox footer button:hover {
+            box-shadow: 0px 0px 6px rgb(73, 73, 73);
+        }
+
+
+        .addBtnBox {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            border-radius: 50%;
+        }
+
+        .addBtnBox button {
+            outline: none;
+            border: none;
+            font-size: 50px;
+            font-weight: 600;
+            border-radius: 50%;
+            height: 70px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background-color: white;
+            color: royalblue;
+            cursor: pointer;
+            transition: 0.2s all;
+        }
+
+        .addBtnBox button:hover {
+            box-shadow: 2px 2px 10px black;
+        }
+
+        @media (width < 450px) {
+            .tableContainer {
+                padding: 15px;
+            }
+
+            nav.filter {
+                position: static;
+                border-bottom: 1px solid gray;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="topNav">
+        <ul>
+            <li><a href="/index.html" class="active">Home</a></li>
+            <li><a href="/verbs.html">Verbs</a></li>
+        </ul>
+        <img src="pic.jpg" alt="Profile" onclick="showProfile(event)" id="topProfilePic">
+        <div class="profile">
+            <p id="email"></p>
+            <div class="imgContainer">
+                <img src="pic.jpg" alt="" id="profilePic">
+                <input type="file" id="ProfilePicBtn" style="display: none;" accept="image/*" multiple="false">
+                <label for="ProfilePicBtn">edit</label>
+            </div>
+            <h2>Hi, <span id="name"></span>!</h2>
+            <a href="">Mange your account</a>
+            <footer>
+                <button type="button" id="signOut">Sign out</button>
+            </footer>
+        </div>
+    </nav>
+    <nav class="filter">
+        <div>
+            <label for="statusFilter">Status</label>
+            <select id="statusFilter">
+                <option value="All">All</option>
+                <option value="cpt">Complete</option>
+                <option value="inCpt">InComplete</option>
+            </select>
+        </div>
+        <div>
+            <label for="box">Box</label>
+            <select id="box">
+                <option value="All">All</option>
+                <option value="B1">Box 1</option>
+                <option value="B2">Box 2</option>
+                <option value="B3">Box 3</option>
+                <option value="B4">Box 4</option>
+                <option value="B5">Box 5</option>
+                <option value="B6">Box 6</option>
+            </select>
+        </div>
+        <input type="text" id="input" placeholder="Search">
+    </nav>
+
+    <div class="tableContainer">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th nowrap>SENTENCE IN HINDI</th>
+                    <th nowrap>SENTENCE IN ENGLISH</th>
+                    <th nowrap style="width: 160px;min-width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="container">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="popUp">
+        <div class="addBox">
+            <header>
+                <h2><span id="addBoxHead">Add New</span> Sentence</h2>
+                <button type="button" id="closeBtn">X</button>
+            </header>
+            <main>
+                <ul>
+                    <li>
+                        <label for="hin">Hindi</label>
+                        <input type="text" id="hin">
+                    </li>
+                    <li>
+                        <label for="eng">English</label>
+                        <input type="text" id="eng">
+                    </li>
+                    <li>
+                        <label for="boxInput">Box</label>
+                        <select id="boxInput">
+                            <option value="B1">Box 1</option>
+                            <option value="B2">Box 2</option>
+                            <option value="B3">Box 3</option>
+                            <option value="B4">Box 4</option>
+                            <option value="B5">Box 5</option>
+                            <option value="B6">Box 6</option>
+                        </select>
+                    </li>
+                </ul>
+            </main>
+            <footer>
+                <button id="resetBtn">Reset</button>
+                <button id="addUpdateBtn">Add Sentence</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="addBtnBox">
+        <button type="button" id="addBtn">+</button>
+    </div>
+
+    <div id="loaderBox">
+        <div class="loader">
+        </div>
+    </div>
+
+    <script src="profile.js"></script>
+    <script type="module">
+        import {profilePicUpload, getCurrentUser, logout, InsertData, getAllData, updateData, deleteData, existData, updateMultipleData, uniqueId } from './config.js';
+
+        let user = null;
+        function setUser(type, u){
+            if(type == 'login'){
+                user = u;
+                setProfile(u);
+                getAllData(`snt/${u.uid}`, setData, showLoader);
+            }
+            if(type == 'logout'){
+                window.location.href = 'login.html'
+            }
+        }
+        getCurrentUser(setUser);
+
+        let initialVal = {
+            "hin": "",
+            "eng": "",
+            "box": 'B1',
+            "sts": 'inCpt'
+        }
+        let isEditable = false;
+        let arr = [];
+
+        let signOutBtn = document.getElementById('signOut');
+        signOutBtn.addEventListener('click', logout);
+
+        let ProfilePicBtn = document.getElementById('ProfilePicBtn');
+        ProfilePicBtn.addEventListener('input', ProfilePicChange);
+
+        let container = document.getElementById('container');
+        let popUpBox = document.getElementsByClassName('popUp')[0];
+        let addBtn = document.getElementById('addBtn');
+        let closeBtn = document.getElementById('closeBtn');
+        let addUpdateBtn = document.getElementById('addUpdateBtn');
+        let resetBtn = document.getElementById('resetBtn');
+        let loaderBox = document.getElementById('loaderBox');
+        //filter
+        let input = document.getElementById('input');
+        let box = document.getElementById('box');
+        let statusFilter = document.getElementById('statusFilter');
+        //form 
+
+        let hin = document.getElementById('hin');
+        let eng = document.getElementById('eng');
+        let boxInput = document.getElementById('boxInput');
+
+        // eventListener
+        input.addEventListener('input', filter);
+        box.addEventListener('input', filter);
+        statusFilter.addEventListener('input', filter);
+        addBtn.addEventListener('click', openAddBox);
+        closeBtn.addEventListener('click', closeAddBox);
+        addUpdateBtn.addEventListener('click', addUpdate);
+        resetBtn.addEventListener('click', () => setFormValue(initialVal));
+
+        showLoader(true);
+        function showTable(data) {
+            container.innerHTML = '';
+            data.forEach(item => {
+                let tr = document.createElement('tr');
+                tr.classList.add(item.sts)
+                tr.innerHTML = `
+                <td>${item.hin}</td>
+                <td>${item.eng}</td>`;
+
+                let td = document.createElement('td');
+                //edit Button
+                let editBtn = document.createElement('button');
+                editBtn.innerText = 'Edit';
+                editBtn.addEventListener('click', () => editData(item))
+                td.appendChild(editBtn);
+                // delete Button
+                let delBtn = document.createElement('button');
+                delBtn.innerText = 'Del';
+                delBtn.addEventListener('click', () => deleteD(item.id))
+                td.appendChild(delBtn);
+                // complete/inComplete Button
+                let completeBtn = document.createElement('button');
+                completeBtn.innerText = item.sts === 'cpt' ? 'inc' : 'cpt';
+                completeBtn.addEventListener('click', () => cptInCpt(item.id, item.sts))
+                td.appendChild(completeBtn);
+
+                tr.appendChild(td)
+                container.appendChild(tr)
+            });
+        }
+
+
+        function setData(data) {
+            showTable(data);
+            arr = data;
+        }
+
+        function showLoader(bool) {
+            loaderBox.style.display = bool ? 'flex' : 'none';
+        }
+
+
+        function filter() {
+            let inputVal = input.value.toUpperCase();
+            let boxVal = box.value;
+            let data = arr.filter((item) =>
+                ((item.hin.toUpperCase().includes(inputVal) || item.eng.toUpperCase().includes(inputVal)) && (boxVal === 'All' || boxVal === item.box) && (statusFilter.value === 'All' || statusFilter.value === item.sts))
+            );
+            showTable(data)
+        }
+
+        function openAddBox() {
+            popUpBox.style.display = 'block';
+        }
+
+        function closeAddBox() {
+            popUpBox.style.display = 'none';
+            if (isEditable) {
+                setFormValue(initialVal, 'A');
+                isEditable = false;
+            }
+        }
+
+        function addUpdate() {
+            let obj = {
+                box: boxInput.value,
+                hin: hin.value,
+                eng: eng.value,
+                time: JSON.stringify(new Date())
+            }
+            if (obj.box === '' || obj.hin === '' || obj.eng === '') {
+                alert('Please Fill All The Fields');
+                return
+            }
+            showLoader(true);
+            if (isEditable) {
+                updateData(obj, isEditable.id, `snt/${user.uid}`, setData, showLoader);
+                isEditable = false;
+            }
+            else {
+                obj.id = uniqueId();
+                obj.sts = 'inCpt';
+                InsertData(obj, `snt/${user.uid}`, setData, showLoader);
+            }
+            setFormValue(initialVal);
+            closeAddBox();
+            statusFilter.children[0].selected = 'selected';
+            box.children[0].selected = 'selected';
+            input.value = '';
+        }
+
+        function editData(item) {
+            openAddBox();
+            setFormValue(item, 'U');
+            isEditable = item;
+        }
+
+        function deleteD(id) {
+            if (confirm('Do You Want to Delete The Verb')) {
+                showLoader(true);
+                deleteData(id, `snt/${user.uid}`, setData, showLoader);
+            }
+        }
+
+        function cptInCpt(id, sts) {
+            if (confirm(`Do You Want to ${sts == 'cpt' ? 'InComplete' : 'Complete'} The Question`)) {
+                let obj = { sts: sts === 'cpt' ? 'inCpt' : 'cpt' }
+                showLoader(true);
+                updateData(obj, id, `snt/${user.uid}`, setData, showLoader);
+            }
+        }
+
+        function ProfilePicChange(e){
+            let file = e.target.files[0];
+            if(file.type.includes('image')){
+                showLoader(true);
+                profilePicUpload(user.uid, file, setProfile, showLoader);
+            }
+            else{
+                alert('Upload Only Image File')
+            }
+        }
+
+        function setFormValue(val, t) {
+            hin.value = val.hin;
+            eng.value = val.eng;
+
+            for (let i in boxInput.children) {
+                if (boxInput.children[i].value == val.box) {
+                    boxInput.children[i].selected = 'selected';
+                    break;
+                }
+            }
+
+            let addBoxHead = document.getElementById('addBoxHead');
+            if (t === 'U') {
+                addBoxHead.innerText = 'Update'
+                addUpdateBtn.innerText = 'Update';
+            }
+            if (t === 'A') {
+                addBoxHead.innerText = 'Add New'
+                addUpdateBtn.innerText = 'Add';
+            }
+        }
+    </script>
+</body>
+
+</html>

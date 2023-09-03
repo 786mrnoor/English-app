@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="loader.css">
+    <style>
+        :root {
+            --bgColor: linear-gradient(90deg, #0140ff, #f8bfbf);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bgColor);
+        }
+
+        .container {
+            margin: 100px auto;
+            width: 90%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 2px 2px 5px black;
+            padding: 30px;
+        }
+
+        .container h1 {
+            text-align: center;
+        }
+
+        .container main {
+            padding: 0 0 20px 0;
+        }
+
+        .container main .inputField {
+            position: relative;
+            margin-top: 25px;
+        }
+
+        .container main .inputField input {
+            color: royalblue;
+            border-radius: 5px;
+            width: 100%;
+            padding: 10px;
+            font-size: 17px;
+            border: 1px solid royalblue;
+            outline: none;
+        }
+
+        .container main .inputField input:focus {
+            box-shadow: 0px 0px 7px royalblue;
+        }
+
+        .container main .inputField input:focus~span,
+        .container main .inputField input:valid~span {
+            padding: 2px 6px;
+            transform: translate(8px, -13px);
+            background-color: royalblue;
+            color: white;
+            font-size: 14px;
+        }
+
+        .container main .inputField p {
+            color: red;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .container main .inputField span {
+            color: royalblue;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            font-size: 17px;
+            pointer-events: none;
+            user-select: none;
+            transition: 0.3s all;
+        }
+
+        .container footer button {
+            width: 100%;
+            background: var(--bgColor);
+            padding: 10px;
+            color: white;
+            outline: none;
+            border: 1px solid royalblue;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 19px;
+            margin-bottom: 25px;
+            transition: 0.3s all;
+            box-shadow: 2px 2px 5px rgb(95, 95, 95);
+        }
+
+        .container footer button:active {
+            box-shadow: inset 2px 2px 6px rgb(82, 82, 82);
+        }
+
+        .container footer button:focus {
+            outline: 3px solid #03A9F4;
+        }
+
+        .container footer p {
+            text-align: center;
+        }
+
+        .container footer p a {
+            color: royalblue;
+            text-decoration: none;
+            outline: none;
+        }
+
+        .container footer p a:focus {
+            border: 1px dashed royalblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <main>
+            <div class="inputField">
+                <input type="text" id="email" required>
+                <p id="emailErr"></p>
+                <span>Email</span>
+            </div>
+            <div class="inputField">
+                <input type="text" id="pass" required>
+                <p id="passErr"></p>
+                <span>Password</span>
+            </div>
+        </main>
+        <footer>
+            <button type="button" id="login">Login</button>
+            <p>Don't have an account? <a href="signup.html">Signup</a></p>
+        </footer>
+    </div>
+
+    <div id="loaderBox">
+        <div class="loader">
+        </div>
+    </div>
+
+    <script type="module">
+        import { login } from './config.js';
+        
+        let loaderBox = document.getElementById('loaderBox');
+
+        let email = document.getElementById('email');
+        let pass = document.getElementById('pass');
+        
+        let emailErr = document.getElementById('emailErr');
+        let passErr = document.getElementById('passErr');
+
+        let loginBtn = document.getElementById('login');
+        loginBtn.addEventListener('click', getFormVal);
+
+        function getFormVal() {
+            let valid = true;
+            let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email.value == '' || !pattern.test(email.value)) {
+                emailErr.innerText  = 'Please Enter a Valid Email';
+                emailErr.style.display = 'block';
+                valid = false;
+            }
+            else {
+                emailErr.style.display = 'none';
+            }
+            if (pass.value == '') {
+                passErr.innerText = 'Please Fill The Password';
+                passErr.style.display = 'block';
+                valid = false;
+            }
+            else {
+                passErr.style.display = 'none';
+            }
+            if(valid){
+                showLoader(true);
+                login(email.value, pass.value, showError)
+            }
+        }
+
+        function showError(error) {
+            let code = error.code;
+            if (code == 'auth/wrong-password') {
+                passErr.innerText = 'Password Not Match';
+                passErr.style.display = 'block';
+            }
+            else if (code === 'auth/invalid-email') {
+                emailErr.innerText = 'Invalid email';
+                emailErr.style.display = 'block';
+            }
+            else if (code === 'auth/user-not-found') {
+                emailErr.innerText = 'User Not Found';
+                emailErr.style.display = 'block';
+            }
+            else if (code === 'auth/too-many-requests') {
+                alert('Too many Request');
+            }
+            else{
+                alert(error.message);
+            }
+            showLoader(false);
+            console.log(code);
+            console.log(error.message);
+        }
+
+        function showLoader(b) {
+            loaderBox.style.display = b ? 'flex' : 'none';
+        }
+
+    </script>
+</body>
+
+</html>
